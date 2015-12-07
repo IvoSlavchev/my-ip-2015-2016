@@ -4,7 +4,7 @@
 	</head>
 	<body>
 		Hello world in the body
-		<table>
+		<table id="studentsTable">
 			<thead>
 				<tr>
 					<td>Number</td>
@@ -14,12 +14,12 @@
 			<tbody>
 				<tr>
 					<td>1</td>
-					<td>Ivan</td>
-				</tr>
+					<td class="name-column">Ivan</td>
+				</tr>			
 				<tr>
 					<td>2</td>
-					<td>Petar</td>
-				</tr>
+					<td class="name-column">Petar</td>
+				</tr>			
 			</tbody>
 		</table>
 		
@@ -35,7 +35,22 @@
 			<li>Vitosha</li>
 		</ol>
 		
-		<script type="text/javascript" src="libs/jquery-2.1.4.js"></script>
-		<script type="text/javascript" src="scripts/sampleJQuery.js"></script>
+		<button id="removeMountain">Remove mountain</button>
+		<input id="mountainNameInput" placeholder="Enter mountain name" />
+		<button id="addMountain">Add mountain</button>
+		<button id="hiking">Hiking</button>
+
+		<script
+			type="text/javascript"
+			src="libs/jquery.js">
+		</script>
+		<script
+			type="text/javascript"
+			src="libs/lodash.js">
+		</script>
+		<script
+			type="text/javascript"
+			src="scripts/sampleJQuery.js">
+		</script>
 	</body>
 </html>
