@@ -53,6 +53,25 @@ $(document).ready(function() {
 		});
 	}
 	
+	function populateForm(task) {
+		$("#updatePanel input").val(task.title);
+		$("#updatePanel textarea").val(task.description);
+	}
+	
+	function saveEdited(taskId) {
+		var task = {
+			title: $("#updatePanel input").val(),
+			description: $("#updatePanel textarea").val()
+		}
+		
+		$.ajax(taskEndpoint(taskId), {
+			method: "PUT",
+			contentType: "application/json; charset=utf-8",
+			data: JSON.stringify(task),
+			dataType: "json"
+		});
+	}
+	
 	function attachHandlers() {
 		var taskId = null;
 		
@@ -75,6 +94,17 @@ $(document).ready(function() {
 			deleteTask(taskId);
 			window.location.reload();
 			showPanel("emptyPanel");
+		});
+		
+		$("#readPanel .task-action-ok").click(function() {
+			showPanel("updatePanel");
+			readTask(taskId).then(populateForm);
+		});
+		
+		$("#updatePanel .task-action-ok").click(function() {
+			saveEdited(taskId);	
+			readTask(taskId).then(showTaskView);
+			window.location.reload();
 		});
 	}
 	
