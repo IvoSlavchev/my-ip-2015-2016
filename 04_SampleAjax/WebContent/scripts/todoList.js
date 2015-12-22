@@ -1,6 +1,7 @@
 $(document).ready(function() {
 	"use strict";
 	var ENDPOINT = "http://localhost:3000/tasks";
+	
 	function taskEndpoint(taskId) {
 		return ENDPOINT + "/" + taskId;
 	}
@@ -49,7 +50,10 @@ $(document).ready(function() {
 	
 	function deleteTask(taskId) {
 		$.ajax(taskEndpoint(taskId), {
-			method: "DELETE"
+			method: "DELETE",
+			success: function() { 
+				window.location.reload();
+		    }
 		});
 	}
 	
@@ -68,7 +72,27 @@ $(document).ready(function() {
 			method: "PUT",
 			contentType: "application/json; charset=utf-8",
 			data: JSON.stringify(task),
-			dataType: "json"
+			dataType: "json",
+			success: function() { 
+				window.location.reload();
+		    }
+		});
+	}
+	
+	function addTask() {
+		var task = {
+			title: $("#createPanel input").val(),
+			description: $("#createPanel textarea").val()
+		}
+			
+		$.ajax(ENDPOINT, {
+			method: "POST",
+			contentType: "application/json; charset=utf-8",
+			data: JSON.stringify(task),
+			dataType: "json",
+			success: function() { 
+				window.location.reload();
+		    }
 		});
 	}
 	
@@ -86,13 +110,6 @@ $(document).ready(function() {
 		
 		$(".task-action-remove").click(function() {
 			deleteTask(taskId);
-			window.location.reload();
-			showPanel("emptyPanel");
-		});
-		
-		$(".task-action-remove").click(function() {
-			deleteTask(taskId);
-			window.location.reload();
 			showPanel("emptyPanel");
 		});
 		
@@ -103,8 +120,14 @@ $(document).ready(function() {
 		
 		$("#updatePanel .task-action-ok").click(function() {
 			saveEdited(taskId);	
-			readTask(taskId).then(showTaskView);
-			window.location.reload();
+		});
+		
+		$("#addTaskButton").click(function() {
+			showPanel("createPanel");
+		});
+		
+		$("#createPanel .task-action-ok").click(function() {
+			addTask();	
 		});
 	}
 	
