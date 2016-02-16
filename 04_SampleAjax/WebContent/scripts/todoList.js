@@ -56,12 +56,13 @@ $(document).ready(function() {
 	}
 	
 	function highlightTaskInTaskList(task) {
-		$("#tasksList li[data-task-id='"+task.id+"']").addClass("active");
+		$("#tasksList li[data-task-id='" + task.id + "']").addClass("active");
 	}
 	
 	function showTaskView(task) {
 		$("#readPanel .task-title").text(task.title);
 		$("#readPanel .task-description").text(task.description);
+		$("#readPanel .task-author").text(task.author);
 		$("#readPanel .task-action-remove").attr("data-task-id", task.id);
 		$("#readPanel .task-action-ok").attr("data-task-id", task.id);
 		showPanel("readPanel");
@@ -71,7 +72,7 @@ $(document).ready(function() {
 	function showTaskUpdate(task) {
 		$("#updatePanel [name='title']").val(task.title);
 		$("#updatePanel [name='description']").val(task.description);
-
+		$("#updatePanel .task-author").text(task.author);
 		$("#updatePanel .task-action-ok").attr("data-task-id", task.id);
 		showPanel("updatePanel");
 		highlightTaskInTaskList(task);
@@ -104,13 +105,15 @@ $(document).ready(function() {
 		$("#addTaskButton").click(function() {
 			$("#createPanel [name='title']").val("");
 			$("#createPanel [name='description']").val("");
+			$("#createPanel [name='author']").val("");
 			showPanel("createPanel");
 		});
 		
 		$("#createPanel .task-action-ok").click(function() {
 			var task = {
 				title: $("#createPanel [name='title']").val(),
-				description: $("#createPanel [name='description']").val()
+				description: $("#createPanel [name='description']").val(),
+				author: $("#createPanel [name='author']").val()
 			};
 			createTask(task).then(function(response) {
 				reloadTasks().then(function() {
