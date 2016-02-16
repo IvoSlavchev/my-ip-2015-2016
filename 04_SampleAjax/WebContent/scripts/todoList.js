@@ -1,6 +1,7 @@
 $(document).ready(function() {
 	"use strict";
-	var ENDPOINT = "http://localhost:3000/tasks";
+	
+	var ENDPOINT = "http://localhost:8080/05_SampleBackend/api/v1/tasks";
 	
 	function taskEndpoint(taskId) {
 		return ENDPOINT + "/" + taskId;
@@ -12,6 +13,7 @@ $(document).ready(function() {
 			$("#"+nextValue).hide();
 		});
 		$("#"+panelName).show();
+		$("#tasksList li.active").removeClass("active");
 	}
 
 	function listTasks() {
@@ -28,14 +30,55 @@ $(document).ready(function() {
 		});
 	}
 	
+	function deleteTask(taskId) {
+		return $.ajax(taskEndpoint(taskId), {
+			method: "DELETE",
+			dataType: "json"
+		});
+	}
+
+	function createTask(task) {
+		return $.ajax(ENDPOINT, {
+			method: "POST",
+			dataType: "json",
+			data: JSON.stringify(task),
+			contentType: "application/json; charset=utf-8"
+		});
+	}
+	
+	function updateTask(task) {
+		return $.ajax(taskEndpoint(task.id), {
+			method: "PUT",
+			dataType: "json",
+			data: JSON.stringify(task),
+			contentType: "application/json; charset=utf-8"
+		});
+	}
+	
+	function highlightTaskInTaskList(task) {
+		$("#tasksList li[data-task-id='"+task.id+"']").addClass("active");
+	}
+	
 	function showTaskView(task) {
 		$("#readPanel .task-title").text(task.title);
 		$("#readPanel .task-description").text(task.description);
+		$("#readPanel .task-action-remove").attr("data-task-id", task.id);
+		$("#readPanel .task-action-ok").attr("data-task-id", task.id);
 		showPanel("readPanel");
+		highlightTaskInTaskList(task);
 	}
 	
+	function showTaskUpdate(task) {
+		$("#updatePanel [name='title']").val(task.title);
+		$("#updatePanel [name='description']").val(task.description);
+
+		$("#updatePanel .task-action-ok").attr("data-task-id", task.id);
+		showPanel("updatePanel");
+		highlightTaskInTaskList(task);
+	}
+
 	function reloadTasks() {
-		listTasks().then(function(response) {
+		return listTasks().then(function(response) {
 			function addTaskToList(task) {
 				var newItem = $("<li />");
 				newItem.text(task.title);
@@ -48,59 +91,9 @@ $(document).ready(function() {
 		});
 	}
 	
-	function deleteTask(taskId) {
-		$.ajax(taskEndpoint(taskId), {
-			method: "DELETE",
-			success: function() { 
-				window.location.reload();
-		    }
-		});
-	}
-	
-	function populateForm(task) {
-		$("#updatePanel input").val(task.title);
-		$("#updatePanel textarea").val(task.description);
-	}
-	
-	function saveEdited(taskId) {
-		var task = {
-			title: $("#updatePanel input").val(),
-			description: $("#updatePanel textarea").val()
-		}
-		
-		$.ajax(taskEndpoint(taskId), {
-			method: "PUT",
-			contentType: "application/json; charset=utf-8",
-			data: JSON.stringify(task),
-			dataType: "json",
-			success: function() { 
-				window.location.reload();
-		    }
-		});
-	}
-	
-	function addTask() {
-		var task = {
-			title: $("#createPanel input").val(),
-			description: $("#createPanel textarea").val()
-		}
-			
-		$.ajax(ENDPOINT, {
-			method: "POST",
-			contentType: "application/json; charset=utf-8",
-			data: JSON.stringify(task),
-			dataType: "json",
-			success: function() { 
-				window.location.reload();
-		    }
-		});
-	}
-	
 	function attachHandlers() {
-		var taskId = null;
-		
 		$(document).on("click", "#tasksList [data-task-id]", function() {
-			taskId = $(this).attr("data-task-id");
+			var taskId = $(this).attr("data-task-id");
 			readTask(taskId).then(showTaskView);
 		});
 		
@@ -108,29 +101,50 @@ $(document).ready(function() {
 			showPanel("emptyPanel");
 		});
 		
-		$(".task-action-remove").click(function() {
-			deleteTask(taskId);
-			showPanel("emptyPanel");
-		});
-		
-		$("#readPanel .task-action-ok").click(function() {
-			showPanel("updatePanel");
-			readTask(taskId).then(populateForm);
-		});
-		
-		$("#updatePanel .task-action-ok").click(function() {
-			saveEdited(taskId);	
-		});
-		
 		$("#addTaskButton").click(function() {
+			$("#createPanel [name='title']").val("");
+			$("#createPanel [name='description']").val("");
 			showPanel("createPanel");
 		});
 		
 		$("#createPanel .task-action-ok").click(function() {
-			addTask();	
+			var task = {
+				title: $("#createPanel [name='title']").val(),
+				description: $("#createPanel [name='description']").val()
+			};
+			createTask(task).then(function(response) {
+				reloadTasks().then(function() {
+					showTaskView(response);
+				});
+			});
+		});
+		
+		$(".task-action-remove").click(function() {
+			var taskId = $(this).attr("data-task-id");
+			deleteTask(taskId).then(function() {
+				reloadTasks();
+				showPanel("emptyPanel");
+			});
+		});
+		
+		$("#readPanel .task-action-ok").click(function() {
+			var taskId = $(this).attr("data-task-id");
+			readTask(taskId).then(showTaskUpdate);
+		});
+		
+		$("#updatePanel .task-action-ok").click(function() {
+			var task = {
+				title: $("#updatePanel [name='title']").val(),
+				description: $("#updatePanel [name='description']").val(),
+				id: $(this).attr("data-task-id")
+			};
+			updateTask(task).then(function(response) {
+				reloadTasks().then(function() {
+					showTaskView(response);
+				});
+			});
 		});
 	}
-	
 	attachHandlers();
 	reloadTasks();
 });

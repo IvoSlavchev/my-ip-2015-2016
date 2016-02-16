@@ -1,6 +1,8 @@
 $(document).ready(function() {
 	"use strict";
+	
 	var ENDPOINT = "http://localhost:3000/tasks";
+	
 	function taskEndpoint(taskId) {
 		return ENDPOINT + "/" + taskId;
 	}
@@ -9,7 +11,7 @@ $(document).ready(function() {
 		console.log("error: ", arguments);
 		alert("Error!");
 	});
-
+	
 	$.ajax(ENDPOINT, {
 		method: "GET",
 		data: {
@@ -31,6 +33,7 @@ $(document).ready(function() {
 		title: "hello",
 		description: "some text"
 	};
+	
 	var createPromise = $.ajax(ENDPOINT, {
 		method: "POST",
 		contentType: "application/json; charset=utf-8",
