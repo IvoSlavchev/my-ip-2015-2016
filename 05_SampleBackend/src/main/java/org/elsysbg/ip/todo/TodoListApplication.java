@@ -15,7 +15,6 @@ public class TodoListApplication extends ResourceConfig {
 	@Inject
 	public TodoListApplication(ServiceLocator serviceLocator) {
 		this();
-
 		GuiceBridge.getGuiceBridge().initializeGuiceBridge(serviceLocator);
 		final GuiceIntoHK2Bridge guiceBridge = serviceLocator.getService(GuiceIntoHK2Bridge.class);
 		guiceBridge.bridgeGuiceInjector(TodoListServletContextListener.injector);

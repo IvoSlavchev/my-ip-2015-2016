@@ -14,15 +14,18 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import org.elsysbg.ip.todo.entities.Task;
+import org.elsysbg.ip.todo.services.AuthenticationService;
 import org.elsysbg.ip.todo.services.TasksService;
 
 @Path("/tasks")
 public class TasksRest {
 	private final TasksService tasksService;
+	private final AuthenticationService authenticationService;
 
 	@Inject
-	public TasksRest(TasksService tasksService) {
+	public TasksRest(TasksService tasksService, AuthenticationService authenticationService) {
 		this.tasksService = tasksService;
+		this.authenticationService = authenticationService;
 	}
 	
 	@GET
@@ -42,6 +45,7 @@ public class TasksRest {
 	@Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 	public Task createTask(Task task) {
+		task.setAuthor(authenticationService.getCurrentlyLoggedInMember());
 		return tasksService.createTask(task);
 	}
 	
