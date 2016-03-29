@@ -13,9 +13,12 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import org.apache.shiro.authz.annotation.RequiresAuthentication;
+import org.apache.shiro.subject.Subject;
 import org.elsysbg.ip.todo.entities.Task;
 import org.elsysbg.ip.todo.services.AuthenticationService;
 import org.elsysbg.ip.todo.services.TasksService;
+import org.secnod.shiro.jaxrs.Auth;
 
 @Path("/tasks")
 public class TasksRest {
@@ -23,7 +26,8 @@ public class TasksRest {
 	private final AuthenticationService authenticationService;
 
 	@Inject
-	public TasksRest(TasksService tasksService, AuthenticationService authenticationService) {
+	public TasksRest(TasksService tasksService,
+			AuthenticationService authenticationService) {
 		this.tasksService = tasksService;
 		this.authenticationService = authenticationService;
 	}
@@ -44,8 +48,9 @@ public class TasksRest {
 	@POST
 	@Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-	public Task createTask(Task task) {
-		task.setAuthor(authenticationService.getCurrentlyLoggedInMember());
+	@RequiresAuthentication
+	public Task createTask(@Auth Subject subject, Task task) {
+		task.setAuthor(authenticationService.getCurrentlyLoggedInMember(subject));
 		return tasksService.createTask(task);
 	}
 	

@@ -6,12 +6,10 @@
 	<version>0.1-SNAPSHOT</version>
 
 	<properties>
-		<db.path>.</db.path>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<jersey.version>2.21</jersey.version>
 		<compileSource>1.7</compileSource>
 		<compileTarget>1.7</compileTarget>
-		<tomcat.version>7.0.64</tomcat.version>
 		<guice.version>4.0</guice.version>
 		<hk2.version>2.4.0-b31</hk2.version>
 		<openjpa.version>2.4.0</openjpa.version>
@@ -79,6 +77,19 @@
 			<artifactId>derby</artifactId>
 			<version>10.12.1.1</version>
 		</dependency>
+		
+		<!-- shiro -->
+		<dependency>
+			<groupId>org.secnod.shiro</groupId>
+			<artifactId>shiro-jersey</artifactId>
+			<version>0.2.0</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>
+			<version>1.2</version>
+		</dependency>
+		
 	</dependencies>
 
 	<build>

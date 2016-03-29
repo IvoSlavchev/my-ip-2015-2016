@@ -37,7 +37,8 @@ public class TasksService {
 	public List<Task> getTasks() {
 		final EntityManager em = entityManagerService.createEntityManager();
 		try {
-			final TypedQuery<Task> query = em.createNamedQuery(Task.QUERY_ALL, Task.class);
+			final TypedQuery<Task> query =
+				em.createNamedQuery(Task.QUERY_ALL, Task.class);
 			return query.getResultList();
 		} finally {
 			em.close();
@@ -49,7 +50,8 @@ public class TasksService {
 		try {
 			final Task result = em.find(Task.class, taskId);
 			if (result == null) {
-				throw new IllegalArgumentException("No task with id: " + taskId);
+				throw new IllegalArgumentException(
+						"No task with id: " + taskId);
 			}
 			return result;
 		} finally {
@@ -78,7 +80,8 @@ public class TasksService {
 			em.getTransaction().begin();
 			final Task task = em.find(Task.class, taskId);
 			if (task == null) {
-				throw new IllegalArgumentException("No task with id: " + taskId);
+				throw new IllegalArgumentException(
+						"No task with id: " + taskId);
 			}
 			em.remove(task);
 			em.getTransaction().commit();
@@ -93,7 +96,8 @@ public class TasksService {
 	public List<Task> getTasksByAuthor(Member author) {
 		final EntityManager em = entityManagerService.createEntityManager();
 		try {
-			final TypedQuery<Task> query = em.createNamedQuery(Task.QUERY_BY_AUTHOR, Task.class);
+			final TypedQuery<Task> query =
+				em.createNamedQuery(Task.QUERY_BY_AUTHOR, Task.class);
 			query.setParameter("author", author);
 			return query.getResultList();
 		} finally {

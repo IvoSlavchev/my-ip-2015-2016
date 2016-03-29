@@ -12,13 +12,17 @@ import org.elsysbg.ip.todo.entities.Member;
 @Singleton
 public class MembersService {
 	private final EntityManagerService entityManagerService;
+	private final AuthenticationService authenticationService;
 	
 	@Inject
-	public MembersService(EntityManagerService entityManagerService) {
+	public MembersService(EntityManagerService entityManagerService,
+		AuthenticationService authenticationService) {
 		this.entityManagerService = entityManagerService;
+		this.authenticationService = authenticationService;
 	}
 
 	public Member createMember(Member member) {
+		member.setPassword(authenticationService.encryptPassword(member.getPassword()));
 		final EntityManager em = entityManagerService.createEntityManager();
 		try {
 			em.getTransaction().begin();
@@ -36,7 +40,8 @@ public class MembersService {
 	public List<Member> getMembers() {
 		final EntityManager em = entityManagerService.createEntityManager();
 		try {
-			final TypedQuery<Member> query = em.createNamedQuery(Member.QUERY_ALL, Member.class);
+			final TypedQuery<Member> query =
+				em.createNamedQuery(Member.QUERY_ALL, Member.class);
 			return query.getResultList();
 		} finally {
 			em.close();
@@ -48,9 +53,22 @@ public class MembersService {
 		try {
 			final Member result = em.find(Member.class, memberId);
 			if (result == null) {
-				throw new IllegalArgumentException("No member with id: " + memberId);
+				throw new IllegalArgumentException(
+						"No member with id: " + memberId);
 			}
 			return result;
+		} finally {
+			em.close();
+		}
+	}
+
+	public Member getMemberByUsername(String username) {
+		final EntityManager em = entityManagerService.createEntityManager();
+		try {
+			final TypedQuery<Member> query =
+					em.createNamedQuery(Member.QUERY_BY_USERNAME, Member.class);
+			query.setParameter("username", username);
+			return query.getSingleResult();
 		} finally {
 			em.close();
 		}

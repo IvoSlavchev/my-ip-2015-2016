@@ -20,8 +20,8 @@ public class TodoListServletContextListener extends GuiceServletContextListener 
 			injector = Guice.createInjector(new ServletModule() {
 				@Override
 				protected void configureServlets() {
-					bind(EntityManagerService.class);
 					bind(TasksService.class);
+					bind(EntityManagerService.class);
 					bind(MembersService.class);
 					bind(AuthenticationService.class);
 				}
