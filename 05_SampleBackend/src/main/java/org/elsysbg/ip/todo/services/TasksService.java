@@ -50,8 +50,7 @@ public class TasksService {
 		try {
 			final Task result = em.find(Task.class, taskId);
 			if (result == null) {
-				throw new IllegalArgumentException(
-						"No task with id: " + taskId);
+				throw new IllegalArgumentException("No task with id: " + taskId);
 			}
 			return result;
 		} finally {
@@ -80,8 +79,7 @@ public class TasksService {
 			em.getTransaction().begin();
 			final Task task = em.find(Task.class, taskId);
 			if (task == null) {
-				throw new IllegalArgumentException(
-						"No task with id: " + taskId);
+				throw new IllegalArgumentException("No task with id: " + taskId);
 			}
 			em.remove(task);
 			em.getTransaction().commit();

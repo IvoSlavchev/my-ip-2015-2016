@@ -28,7 +28,8 @@ public class AuthenticationRest {
 	@Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 	public Member login(@Auth Subject subject, Member member) {
-		authenticationService.login(subject, member.getUsername(), member.getPassword());
+		authenticationService.login(subject,
+				member.getUsername(), member.getPassword());
 		return authenticationService.getCurrentlyLoggedInMember(subject);
 	}
 	

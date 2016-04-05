@@ -28,6 +28,7 @@ public class MembersService {
 			em.getTransaction().begin();
 			em.persist(member);
 			em.getTransaction().commit();
+			
 			return member;
 		} finally {
 			if (em.getTransaction().isActive()) {
@@ -53,8 +54,7 @@ public class MembersService {
 		try {
 			final Member result = em.find(Member.class, memberId);
 			if (result == null) {
-				throw new IllegalArgumentException(
-						"No member with id: " + memberId);
+				throw new IllegalArgumentException("No member with id: " + memberId);
 			}
 			return result;
 		} finally {

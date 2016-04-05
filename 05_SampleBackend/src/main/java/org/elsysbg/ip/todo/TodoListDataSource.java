@@ -10,7 +10,8 @@ import org.elsysbg.ip.todo.services.EntityManagerService;
 public class TodoListDataSource extends SimpleDriverDataSource {
 	
 	@Override
-	protected Connection getSimpleConnection(Properties props) throws SQLException {
+	protected Connection getSimpleConnection(Properties props)
+			throws SQLException {
 		final EntityManagerService entityManagerService = TodoListServletContextListener.injector.getInstance(EntityManagerService.class);
 		return entityManagerService.createEntityManager().unwrap(Connection.class);
 	}
